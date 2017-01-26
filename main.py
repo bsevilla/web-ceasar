@@ -21,16 +21,22 @@ class MainHandler(webapp2.RequestHandler):
     def get(self):
         header = "<h1>Encrypt a Message!</h1>"
         textarea = "<textarea name='message_to_encrypt' id='message_to_encrypt'>Enter text here...</textarea>"
+        text = "Number of Rotations: <input type='text' name='rot' id='rot'/>"
         submit = "<input type='submit' value='Encrypt!'/>"
-        form = "<form action='/EncryptedMessage'>" + textarea + "<br>" + submit + "</form>"
+        form = "<form action='/EncryptedMessage' method='get' target='_blank'>" + textarea + "<br>" + text + "<br>" + submit + "</form>"
         content = header + form
         self.response.write(content)
 
 class EncryptedMessage(webapp2.RequestHandler):
     def get(self):
-        header = "<h1>Here is your encrypted message.</h1>"
-        #encrypted_message = caesar.encrypt(message_to_encrypt, 13)
-        self.response.write(header)
+        header = "<h1>Here is your encrypted message:</h1>"
+        message = self.request.get('message_to_encrypt')
+        rot = self.request.get('rot')
+        encrypted_message = caesar.encrypt(message, rot)
+        footer = "<input type='submit' value='Encrypt a new message?'/>"
+        form = "<form action='/'>" + footer + "</form>"
+        content = header + encrypted_message + form
+        self.response.write(content)
 
 
 app = webapp2.WSGIApplication([
